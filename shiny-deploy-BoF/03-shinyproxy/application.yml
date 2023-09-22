@@ -1,0 +1,17 @@
+proxy:
+  title: ShinyProxy
+  port: 8080
+  hide-navbar: true
+  authentication: simple
+  users:
+  - name: jack
+    password: password
+  specs:
+  - id: omicsplayground
+    display-name: Omics Playground (latest)
+    description: Dockerized Omics Playground 
+    container-image: bigomics/omicsplayground:latest
+
+logging:
+  file:
+    /var/log/shinyproxy.log

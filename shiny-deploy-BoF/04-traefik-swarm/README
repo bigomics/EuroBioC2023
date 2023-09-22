@@ -1,0 +1,80 @@
+STANDARD DEPLOYMENT FOR OPG V3 USING DOCKER SWARM + TRAEFIK
+===========================================================
+
+
+HOWTO
+=====
+
+1. Edit the file settings.env with the correct names for the server
+
+2. Remember to set CNAME for your domain in the DNS registry to
+redirect all subdomain traffic to the primary domain.
+
+3. Comment out the Let's Encrypt staging server in traefik.yml
+
+5. Check and edit the makefile if you want to remove/add extra
+services.
+
+4. Run 'make init' to initialize the swarm. If needed you need to set
+the correct addvertise-addr for the manager.
+
+5. Run 'make deploy' (or just make) to deploy the stack. 
+
+
+YAML files
+==========
+
+app.yml        	Main OmicsPlayground application
+traefik.yml    	Reverse proxy and load balancer
+
+
+NOTES
+======
+
+- When copying the app.yml for additional apps, do not forget to
+  renames the app name in the traefik labels. For example this
+  <LABEL>:
+
+  	  traefik.http.routers.<LABEL>.entrypoints=http
+
+- Do not forget to change the button links in html/index.html if you
+  are serving the www page.
+
+
+
+
+
+
+
+
+
+SWARM WORKERS
+=============
+
+See also: https://www.digitalocean.com/community/tutorials/how-to-configure-the-linux-firewall-for-docker-swarm-on-ubuntu-16-04
+
+
+
+
+1. install: 
+
+   sudo apt get install docker.io emacs s3fs
+
+2. copy s3fs  credentials in /etc/passwd-s3fs and set permissions
+
+   sudo cp passwd-3sfs /etc/
+   sudo chmod 600 /etc/passwd-s3fs
+
+3. Edit fstab for 3sfs
+
+   s3fs#pgxshare-s3-bucket  /pgxshare  fuse _netdev,allow_other,url=https://s3.amazonaws.com 0 0
+
+4. join to swarm
+
+   sudo docker swarm join --token <SWMTKN> 172.31.28.228:2377
+
+5. Open ports in Amazon console (see https://docs.docker.com/engine/swarm/ingress) 
+
+   Port 2377 TCP for communication with and between manager nodes
+   Port 7946 TCP/UDP for overlay network node discovery
+   Port 4789 UDP (configurable) for overlay network traffic
